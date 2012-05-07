@@ -14,6 +14,18 @@ function d3_scale_ordinal(domain, ranger) {
   function steps(start, step) {
     return d3.range(domain.length).map(function(i) { return start + step * i; });
   }
+  
+  scale.invert = function(x) {
+    var ents = index.entries();
+    ents.sort(function(a, b) { return a.value - b.value });
+    var latestKey = null;
+    for ( var i = 0; i < ents.length; i++ ) {
+        latestKey = ents[i].key;
+        var rangeX = range[(ents[i].value - 1) % range.length];
+        if ( rangeX >= x ) { return latestKey; }
+    }
+    return latestKey;
+  };  
 
   scale.domain = function(x) {
     if (!arguments.length) return domain;
